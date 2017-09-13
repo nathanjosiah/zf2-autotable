@@ -1,0 +1,23 @@
+{
+	"name" : "nathanjosiah/zf2-autotable",
+	"version" : "0.0.1",
+	"require" : {
+		"php" : ">=5.5",
+		"zendframework/zendframework" : "^2.5"
+	},
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Nathan Smith",
+			"email" : "nathanjosiah@gmail.com"
+		}
+	],
+	"keywords" : [
+		"zf2",
+		"module"
+	],
+	"autoload" : {
+		"psr-4" : {
+			"AutoTable\\" : "src/AutoTable/"
+		}
+	}
+}

@@ -1,0 +1,5 @@
+site_name: ZF2 AutoTable
+theme: readthedocs
+docs_dir: code
+pages:
+- Home: index.md

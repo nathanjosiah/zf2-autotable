@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="None">
+  
+  <link rel="shortcut icon" href="./img/favicon.ico">
+  <title>Home - ZF2 AutoTable</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="./css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="./css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/";
+  </script>
+  
+  <script src="./js/jquery-2.1.1.min.js"></script>
+  <script src="./js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="./js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> ZF2 AutoTable</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href=".">Home</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#retrieving-data">Retrieving Data</a></li>
+                
+                    <li><a class="toctree-l4" href="#flat-table">Flat table</a></li>
+                
+                    <li><a class="toctree-l4" href="#one-to-many-relationships">One-to-many relationships</a></li>
+                
+                    <li><a class="toctree-l4" href="#many-to-many-relationships">Many-to-many relationships</a></li>
+                
+                    <li><a class="toctree-l4" href="#relationships-arent-one-level-deep">Relationships aren't one level deep</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">ZF2 AutoTable</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="retrieving-data">Retrieving Data</h2>
+<h3 id="flat-table">Flat table</h3>
+<p>Using the following table <code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PB&amp;J is yummy</td>
+</tr>
+<tr>
+<td>3</td>
+<td>I like Jellyfish</td>
+</tr>
+</tbody>
+</table>
+<p>First model the table:</p>
+<pre><code class="php">namespace Application\Model;
+class Article {
+  public $id,$title;
+}
+</code></pre>
+
+<p>Then in the config:</p>
+<pre><code class="php">'auto_tables' =&gt; [
+  'articles' =&gt; [
+    'table_name' =&gt; 'articles',
+    'entity' =&gt; \Application\Model\Article::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+  ]
+]
+</code></pre>
+
+<p>And finally, simple use it:</p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;get('articles');
+$entity = $table-&gt;fetchWithId(2);
+
+// Outputs: &quot;PB&amp;J is yummy&quot;
+echo $entity-&gt;title;
+</code></pre>
+
+<h3 id="one-to-many-relationships">One-to-many relationships</h3>
+<p>With a table <code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>title</th>
+<th>author</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PB&amp;J is yummy</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>I like Jellyfish</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>and another table <code>authors</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Nathan Smith</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Fake Name</td>
+</tr>
+</tbody>
+</table>
+<p>Start by modeling the entity for both:</p>
+<p>The article:</p>
+<pre><code class="php">namespace Application\Model;
+class Article {
+  public $id,$title,$author;
+}
+</code></pre>
+
+<p>and the author</p>
+<pre><code class="php">namespace Application\Model;
+class Author {
+  public $id,$name;
+}
+</code></pre>
+
+<p>Then in the config, define both the <code>articles</code> and <code>authors</code> table and use the <code>linked_tables</code> key to configure the relationship:</p>
+<pre><code class="php">'auto_tables' =&gt; [
+  'articles' =&gt; [
+    'table_name' =&gt; 'articles',
+    'entity' =&gt; \Application\Model\Article::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+    'linked_tables' =&gt; [
+      'author' =&gt; [
+        'name' =&gt; 'authors',
+        'type' =&gt; 'one_to_one',
+      ]
+    ]
+  ],
+  'authors' =&gt; [
+    'table_name' =&gt; 'authors',
+    'entity' =&gt; \Application\Model\Author::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+  ]
+]
+</code></pre>
+
+<p>Then use it:</p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;get('articles');
+$article = $table-&gt;fetchWithId(3);
+
+// Outputs: &quot;I like Jellyfish&quot;
+echo $article-&gt;title;
+
+// Outputs: &quot;Fake Name&quot;
+echo $article-&gt;author-&gt;name;
+</code></pre>
+
+<h3 id="many-to-many-relationships">Many-to-many relationships</h3>
+<p>With a table <code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PB&amp;J is yummy</td>
+</tr>
+<tr>
+<td>3</td>
+<td>I like Jellyfish</td>
+</tr>
+</tbody>
+</table>
+<p>and another table <code>authors</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Nathan Smith</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Fake Name</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Jimmy Boi</td>
+</tr>
+<tr>
+<td>4</td>
+<td>John Doe</td>
+</tr>
+</tbody>
+</table>
+<p>and a mapping table <code>articles_authors_map</code>:</p>
+<table>
+<thead>
+<tr>
+<th>article_id</th>
+<th>author_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>Start by modeling the entity for both:</p>
+<p>The article:</p>
+<pre><code class="php">namespace Application\Model;
+class Article {
+  public $id,$title,$authors;
+}
+</code></pre>
+
+<p>and the author</p>
+<pre><code class="php">namespace Application\Model;
+class Author {
+  public $id,$name,$articles;
+}
+</code></pre>
+
+<p>Then in the config, define both the <code>articles</code> , <code>authors</code>, and <code>articles_authors_map</code> tables and use the <code>linked_tables</code> key for the <code>articles</code> and <code>authors</code> table to configure the two-way relationship:</p>
+<pre><code class="php">'auto_tables' =&gt; [
+  'articles' =&gt; [
+    'table_name' =&gt; 'articles',
+    'entity' =&gt; \Application\Model\Article::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+    'linked_tables' =&gt; [
+      'authors' =&gt; [
+        'type' =&gt; 'many_to_many',
+        'remote_table' =&gt; 'authors',
+        'mapping_table' =&gt; 'articles_authors_map',
+        'local_column' =&gt; 'id',
+        'local_property' =&gt; 'id',
+        'local_mapping_column' =&gt; 'article_id',
+        'remote_mapping_column' =&gt; 'author_id',
+        'remote_column' =&gt; 'id',
+      ]
+    ]
+  ],
+  'authors' =&gt; [
+    'table_name' =&gt; 'authors',
+    'entity' =&gt; \Application\Model\Author::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+    'linked_tables' =&gt; [
+      'articles' =&gt; [
+        'type' =&gt; 'many_to_many',
+        'remote_table' =&gt; 'authors',
+        'mapping_table' =&gt; 'articles_authors_map',
+        'local_column' =&gt; 'id',
+        'local_property' =&gt; 'id',
+        'local_mapping_column' =&gt; 'author_id',
+        'remote_mapping_column' =&gt; 'article_id',
+        'remote_column' =&gt; 'id',
+      ]
+    ]
+  ],
+  'articles_authors_map' =&gt; [
+    'table_name' =&gt; 'articles_authors_map',
+  ]
+]
+</code></pre>
+
+<p>Then use it:</p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;get('articles');
+$article = $table-&gt;fetchWithId(3);
+
+// Outputs: &quot;I like Jellyfish&quot;
+echo $article-&gt;title;
+
+// Outputs: &quot;John Doe&quot; and &quot;Fake Name&quot;
+foreach($article-&gt;authors as $author) {
+  echo $author-&gt;name;
+}
+
+$table = $manager-&gt;get('authors');
+$author = $table-&gt;fetchWithId(3);
+
+// Outputs: &quot;Jimmy Boi&quot;
+echo $author-&gt;name;
+
+// Outputs: &quot;Sweet Baby Ray's is the best!&quot; and &quot;PB&amp;J is yummy&quot;
+foreach($author-&gt;articles as $article) {
+  echo $article-&gt;title;
+}
+</code></pre>
+
+<h3 id="relationships-arent-one-level-deep">Relationships aren't one level deep</h3>
+<p>Any linked tabled contain all the defined relationships all the time</p>
+<p>With a table <code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>title</th>
+<th>author</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PB&amp;J is yummy</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>I like Jellyfish</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>and another table <code>authors</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Name</th>
+<th>Car</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Nathan Smith</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Fake Name</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>and another table <code>cars</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Honda Civic</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Tesla Model 3</td>
+</tr>
+</tbody>
+</table>
+<p>Start by modeling the entity for all:</p>
+<p>The article:</p>
+<pre><code class="php">namespace Application\Model;
+class Article {
+  public $id,$title,$author;
+}
+</code></pre>
+
+<p>and the author</p>
+<pre><code class="php">namespace Application\Model;
+class Author {
+  public $id,$name,$car;
+}
+</code></pre>
+
+<p>and the car</p>
+<pre><code class="php">namespace Application\Model;
+class Car {
+  public $id,$name,$car;
+}
+</code></pre>
+
+<p>Then in the config, define the <code>articles</code>,  <code>authors</code>, and <code>cars</code> tables and use the <code>linked_tables</code> key to configure the relationships:</p>
+<pre><code class="php">'auto_tables' =&gt; [
+  'articles' =&gt; [
+    'table_name' =&gt; 'articles',
+    'entity' =&gt; \Application\Model\Article::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+    'linked_tables' =&gt; [
+      'author' =&gt; [
+        'name' =&gt; 'authors',
+        'type' =&gt; 'one_to_one',
+      ]
+    ]
+  ],
+  'authors' =&gt; [
+    'table_name' =&gt; 'authors',
+    'entity' =&gt; \Application\Model\Author::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+    'linked_tables' =&gt; [
+      'car' =&gt; [
+        'name' =&gt; 'cars',
+        'type' =&gt; 'one_to_one',
+      ]
+    ]
+  ],
+  'cars' =&gt; [
+    'table_name' =&gt; 'cars',
+    'entity' =&gt; \Application\Model\Car::class,
+    'hydrator' =&gt; \Zend\Hydrator\ObjectProperty::class,
+  ]
+]
+</code></pre>
+
+<p>Then use it:</p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;get('articles');
+$article = $table-&gt;fetchWithId(3);
+
+// Outputs: &quot;I like Jellyfish&quot;
+echo $article-&gt;title;
+
+// Outputs: &quot;Fake Name&quot;
+echo $article-&gt;author-&gt;name;
+
+// Outputs: &quot;Honda Civic&quot;
+echo $article-&gt;author-&gt;car-&gt;name;
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+    </span>
+</div>
+    <script src="./js/theme.js"></script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 0.16.1
+Build Date UTC : 2017-09-13 16:25:26
+-->
