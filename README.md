@@ -1,1 +1,1 @@
-Docs can be found at [https://nathanjosiah.github.io/zf2-autotable/](https://nathanjosiah.github.io/zf2-autotable/).
+Docs can be found at [https://nathanjosiah.github.io/zf2-autotable/index.html](https://nathanjosiah.github.io/zf2-autotable/index.html).
