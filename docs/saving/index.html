@@ -210,6 +210,7 @@ $article = $articles-&gt;fetchWithId(3);
 </code></pre>
 
 <h2 id="one-to-many">One-to-Many</h2>
+<p><strong> Create and link a record </strong></p>
 <pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
 $manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
 
@@ -241,6 +242,19 @@ $article = $articles-&gt;fetchWithId(1);
 foreach($article-&gt;comments as $comment) {
     echo $comment-&gt;comment;
 }
+</code></pre>
+
+<p><strong> Unlink a record </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$comments = $manager-&gt;getTable('comments');
+
+$comment = $comments-&gt;fetchWithId(1);
+$comment-&gt;article = null;
+
+// Persist all pending changes
+$manager-&gt;flush();
 </code></pre>
 
 <h2 id="many-to-many">Many-to-Many</h2>

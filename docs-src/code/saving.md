@@ -78,6 +78,8 @@ $article = $articles->fetchWithId(3);
 
 ## One-to-Many
 
+** Create and link a record **
+
 ```php
 // $serviceLocator is an instance of the main ServiceManager
 $manager = $serviceLocator->get(\AutoTable\AutoTableManager::class);
@@ -110,6 +112,21 @@ $article = $articles->fetchWithId(1);
 foreach($article->comments as $comment) {
 	echo $comment->comment;
 }
+```
+
+** Unlink a record **
+
+```php
+// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator->get(\AutoTable\AutoTableManager::class);
+
+$comments = $manager->getTable('comments');
+
+$comment = $comments->fetchWithId(1);
+$comment->article = null;
+
+// Persist all pending changes
+$manager->flush();
 ```
 
 ## Many-to-Many
