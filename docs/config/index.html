@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Configuration - ZF2 AutoTable</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Configuration";
+    var mkdocs_page_input_path = "config.md";
+    var mkdocs_page_url = "/config/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ZF2 AutoTable</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../install/">Installation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../retrieving/">Retrieve Records</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../saving/">Save Records</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Configuration</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#configuration-options">Configuration Options</a></li>
+                
+                    <li><a class="toctree-l4" href="#linkedtableconfig">LinkedTableConfig</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ZF2 AutoTable</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Configuration</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="configuration-options">Configuration Options</h1>
+<p>Within the <code>ServiceManager</code> config key <code>auto_tables</code>:</p>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>type</th>
+<th>description</th>
+<th>required</th>
+<th>default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>table_name</td>
+<td>string</td>
+<td>The name of the table in the DB.</td>
+<td>true</td>
+<td>None</td>
+</tr>
+<tr>
+<td>entity</td>
+<td>string</td>
+<td>Either a <code>ServiceManager</code> key or the Fully-Qualified Class Name of the entity to use.</td>
+<td>false if only for a many-to-many mapping table, otherwise true</td>
+<td>None</td>
+</tr>
+<tr>
+<td>hydrator</td>
+<td>string</td>
+<td>Either a <code>ServiceManager</code> key or the Fully-Qualified Class Name of the hydrator to use.</td>
+<td>false if only for a many-to-many mapping table, otherwise true</td>
+<td>None</td>
+</tr>
+<tr>
+<td>id_column</td>
+<td>string</td>
+<td>The name of the primary column in the DB for this table.</td>
+<td>false</td>
+<td>"id"</td>
+</tr>
+<tr>
+<td>primary_property</td>
+<td>string</td>
+<td>The name of the primary property in the entity.</td>
+<td>false</td>
+<td>"id"</td>
+</tr>
+<tr>
+<td>linked_tables</td>
+<td>array of <a href="#linkedtableconfig"><code>LinkedTableConfig</code></a></td>
+<td>Each key should be the property to link to another table, and each value should be a <a href="#linkedtableconfig"><code>LinkedTableConfig</code></a> array.</td>
+<td>false</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<h2 id="linkedtableconfig">LinkedTableConfig</h2>
+<table>
+<thead>
+<tr>
+<th>key</th>
+<th>type</th>
+<th>description</th>
+<th>required</th>
+<th>default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>alias_to</td>
+<td>string</td>
+<td>Use this if you want to map a friendlier name to a column. For example, mapping "author" to "authorId". Specify the LinkedTableConfig you want to alias. <strong>If specified, all other keys are ignored.</strong></td>
+<td>false</td>
+<td>null</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string Enum</td>
+<td>May be <code>one_to_one</code>, <code>one_to_many</code>, <code>many_to_many</code>. Depending on which of these is set, the required settings change.</td>
+<td>true</td>
+<td>None</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>The table to link to. This is a key in the <code>auto_tables</code> config, not a DB table name.</td>
+<td>true</td>
+<td>None</td>
+</tr>
+<tr>
+<td>remote_column</td>
+<td>string</td>
+<td>The DB column name in the remote table to link to.</td>
+<td>true if <code>one_to_many</code> or <code>many_to_many</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>local_property</td>
+<td>string</td>
+<td>The entity property use when linking to the remote table.</td>
+<td>true if <code>one_to_many</code> or <code>many_to_many</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>local_column</td>
+<td>string</td>
+<td>The DB column to link to the mapping table for the primary table.</td>
+<td>true if <code>many_to_many</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>local_mapping_column</td>
+<td>string</td>
+<td>The DB column of the mapping table to link to the local column.</td>
+<td>true if <code>many_to_many</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>remote_mapping_column</td>
+<td>string</td>
+<td>The DB column of the mapping table to link to the remote column.</td>
+<td>true if <code>many_to_many</code></td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p>To help illustrate the <code>many_to_many</code> options, here is a diagram for an <code>articles</code> table:</p>
+<p><code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id (local_column)</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+</tr>
+</tbody>
+</table>
+<p><code>authors</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id (remote_column)</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>Nathan Smith</td>
+</tr>
+</tbody>
+</table>
+<p><code>articles_authors_map</code>:</p>
+<table>
+<thead>
+<tr>
+<th>article_id (local_mapping_column)</th>
+<th>author_id (remote_mapping_column)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../saving/" class="btn btn-neutral" title="Save Records"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../saving/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+
+</body>
+</html>

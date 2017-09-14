@@ -10,10 +10,10 @@ use Zend\Paginator\Paginator;
 class BaseTable {
 	public $tableGateway,$primaryColumn,$idProperty;
 
-	public function __construct(TableGateway $table_gateway,string $primary_column=null,string $id_property=null) {
+	public function __construct(TableGateway $table_gateway,string $primary_column,string $id_property) {
 		$this->tableGateway = $table_gateway;
-		$this->primaryColumn = $primary_column ?? 'id';
-		$this->idProperty = $id_property ?? 'id';
+		$this->primaryColumn = $primary_column;
+		$this->idProperty = $id_property;
 	}
 
 	/**
@@ -75,11 +75,11 @@ class BaseTable {
 
 	public function save($object) : void {
 		$data = $this->tableGateway->getResultSetPrototype()->getHydrator()->extract($object);
-
 		if($object->{$this->idProperty}) {
 			$this->tableGateway->update($data,[$this->primaryColumn=>$object->{$this->idProperty}]);
 		}
 		else {
+			unset($data[$this->primaryColumn]);
 			$this->tableGateway->insert($data);
 			$object->{$this->idProperty} = $this->tableGateway->getLastInsertValue();
 		}

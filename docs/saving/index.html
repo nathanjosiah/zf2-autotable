@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Save Records - ZF2 AutoTable</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Save Records";
+    var mkdocs_page_input_path = "saving.md";
+    var mkdocs_page_url = "/saving/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ZF2 AutoTable</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../install/">Installation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../retrieving/">Retrieve Records</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Save Records</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#saving-records">Saving Records</a></li>
+                
+                    <li><a class="toctree-l4" href="#flat-record">Flat record</a></li>
+                
+                    <li><a class="toctree-l4" href="#one-to-many">One-to-Many</a></li>
+                
+                    <li><a class="toctree-l4" href="#many-to-many">Many-to-Many</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../config/">Configuration</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ZF2 AutoTable</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Save Records</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="saving-records">Saving Records</h1>
+<p>Once your relationships are configured to retrieve records, you can save the records as well as seen in the section below.</p>
+<h2 id="flat-record">Flat record</h2>
+<p>With a table <code>articles</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>title</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Sweet Baby Ray's is the best!</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PB&amp;J is yummy</td>
+</tr>
+<tr>
+<td>3</td>
+<td>I like Jellyfish</td>
+</tr>
+</tbody>
+</table>
+<p><strong> Create a record </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$article = $manager-&gt;createNew('articles');
+$article-&gt;title &quot;I like AutoTable&quot;
+
+// Persist all pending changes
+$manager-&gt;flush();
+
+// See the results
+$article = $articles-&gt;fetchWithId(4);
+
+// Outputs: &quot;I like AutoTable&quot;
+echo $artcle-&gt;title;
+</code></pre>
+
+<p><strong> Make changes </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$articles = $manager-&gt;getTable('articles');
+// Get the article
+$article = $articles-&gt;fetchWithId(3);
+
+// Outputs: &quot;I like Jellyfish&quot;
+echo $article-&gt;title
+
+// Make changes
+$article-&gt;title = &quot;Jellyfish are gross&quot;
+
+// Persist all pending changes
+$manager-&gt;flush();
+
+// See the results
+$article = $articles-&gt;fetchWithId(3);
+
+// Outputs: &quot;Jellyfish are gross&quot;
+echo $artcle-&gt;title;
+</code></pre>
+
+<p><strong> Delete a Record </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$article = $articles-&gt;fetchWithId(3);
+
+// Delete the article
+$manager-&gt;delete($article);
+
+// Persist all pending changes
+$manager-&gt;flush();
+
+// $article will be null
+$article = $articles-&gt;fetchWithId(3);
+</code></pre>
+
+<h2 id="one-to-many">One-to-Many</h2>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$articles = $manager-&gt;getTable('articles');
+
+// Create the comment
+$comment1 = $manager-&gt;createNew('comments');
+$comment1-&gt;comment = 'This is a new comment';
+
+// Bind it to the article
+$comment1-&gt;article = $articles-&gt;fetchWithId(1);
+// or
+$comment1-&gt;article = 1;
+
+$comment2 = $manager-&gt;createNew('comments');
+$comment2-&gt;comment = 'Comments are great';
+
+// Bind it to the article
+$comment2-&gt;article = $articles-&gt;fetchWithId(1);
+// or
+$comment2-&gt;article = 1;
+
+// Persist all pending changes
+$manager-&gt;flush();
+
+// See the results
+$article = $articles-&gt;fetchWithId(1);
+// Outputs &quot;This is a new comment&quot; and &quot;Comments are great&quot;
+foreach($article-&gt;comments as $comment) {
+    echo $comment-&gt;comment;
+}
+</code></pre>
+
+<h2 id="many-to-many">Many-to-Many</h2>
+<p>With a table <code>authors</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Nathan Smith</td>
+</tr>
+<tr>
+<td>2</td>
+<td>John Doe</td>
+</tr>
+</tbody>
+</table>
+<p>and another table <code>cars</code>:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Tesla Model 3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Honda Civic</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Ice Cream Bus</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tow Truck</td>
+</tr>
+</tbody>
+</table>
+<p>and a mapping table <code>author_car_map</code>:</p>
+<table>
+<thead>
+<tr>
+<th>author_id</th>
+<th>car_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p><strong> Link a Record </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$authors = $manager-&gt;getTable('authors');
+$cars = $manager-&gt;getTable('cars');
+
+// Get the author and desired car
+$author = $authors-&gt;fetchWithId(1);
+$car = $cars-&gt;fetchWithId(1);
+
+// Give a Tesla to Nathan.
+$manager-&gt;link($car,$author);
+
+$manager-&gt;flush();
+
+foreach($author-&gt;cars as $car) {
+    // Outputs: &quot;Ice Cream Bus&quot; and &quot;Tesla Model 3&quot;
+    echo $car-&gt;name;
+}
+</code></pre>
+
+<p><strong> Unlink a Record </strong></p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$authors = $manager-&gt;getTable('authors');
+$cars = $manager-&gt;getTable('cars');
+
+// Get the author and desired car
+$author = $authors-&gt;fetchWithId(1);
+$car = $cars-&gt;fetchWithId(3);
+
+// Take an Ice Cream bus away from Nathan :&quot;( sad day.
+$manager-&gt;unlink($car,$author);
+
+$manager-&gt;flush();
+
+foreach($author-&gt;cars as $car) {
+    // Assuming you linked the record in the previous example above, Outputs: &quot;Tesla Model 3&quot;
+    echo $car-&gt;name;
+}
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../config/" class="btn btn-neutral float-right" title="Configuration">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../retrieving/" class="btn btn-neutral" title="Retrieve Records"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../retrieving/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../config/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+
+</body>
+</html>
