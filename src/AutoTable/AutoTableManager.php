@@ -35,7 +35,7 @@ class AutoTableManager {
 		$entity = $this->getEntityForTable($name);
 		$result_set = new HydratingResultSet($hydrator,$entity,$proxy,$name);
 		$gateway = $this->createTableGateway($table_config['table_name'],$result_set);
-		$table = new BaseTable($gateway,$table_config['id_column'],$table_config['id_property']);
+		$table = new BaseTable($gateway,$table_config['id_column'],$table_config['id_property'],$this->config);
 
 		$this->tableCache[$name] = $table;
 		return $table;

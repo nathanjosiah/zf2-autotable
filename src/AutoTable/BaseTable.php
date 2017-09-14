@@ -8,12 +8,13 @@ use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
 class BaseTable {
-	public $tableGateway,$primaryColumn,$idProperty;
+	public $tableGateway,$primaryColumn,$idProperty,$tablesConfig;
 
-	public function __construct(TableGateway $table_gateway,string $primary_column,string $id_property) {
+	public function __construct(TableGateway $table_gateway,string $primary_column,string $id_property,array $tables_config) {
 		$this->tableGateway = $table_gateway;
 		$this->primaryColumn = $primary_column;
 		$this->idProperty = $id_property;
+		$this->tablesConfig = $tables_config;
 	}
 
 	/**
@@ -73,8 +74,9 @@ class BaseTable {
 		$this->tableGateway->delete([$this->primaryColumn=>$int]);
 	}
 
-	public function save($object) : void {
-		$data = $this->tableGateway->getResultSetPrototype()->getHydrator()->extract($object);
+	public function save(Proxy $object) : void {
+		$data = $this->extractData($object);
+
 		if($object->{$this->idProperty}) {
 			$this->tableGateway->update($data,[$this->primaryColumn=>$object->{$this->idProperty}]);
 		}
@@ -83,6 +85,21 @@ class BaseTable {
 			$this->tableGateway->insert($data);
 			$object->{$this->idProperty} = $this->tableGateway->getLastInsertValue();
 		}
+	}
+
+	public function extractData(Proxy $object) {
+		$data = $this->tableGateway->getResultSetPrototype()->getHydrator()->extract($object);
+
+		$table_config = $this->tablesConfig[$object->__getTable()];
+		if(!empty($table_config['linked_tables'])) {
+			foreach($table_config['linked_tables'] as $property_name => $link_table) {
+				if(isset($link_table['alias_to']) || $link_table['type'] === 'one_to_many' || $link_table['type'] === 'many_to_many') {
+					unset($data[$property_name]);
+				}
+			}
+		}
+
+		return $data;
 	}
 }
 

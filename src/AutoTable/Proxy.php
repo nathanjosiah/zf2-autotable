@@ -3,6 +3,7 @@ namespace AutoTable;
 
 class Proxy {
 	private $__object,$__manager,$__tablesConfig,$__table;
+
 	public function __construct(AutoTableManager $manager,array $tables_config) {
 		$this->__manager = $manager;
 		$this->__tablesConfig = $tables_config;
