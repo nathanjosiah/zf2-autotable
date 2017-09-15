@@ -90,6 +90,13 @@
     </li>
 <li>
           
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../codebase-integration/">Codebase Integration</a>
+        
+    </li>
+<li>
+          
         </ul>
       </div>
       &nbsp;
@@ -141,6 +148,13 @@
 <td>The name of the table in the DB.</td>
 <td>true</td>
 <td>None</td>
+</tr>
+<tr>
+<td>table</td>
+<td>string</td>
+<td>The ServiceManager key to pull for the table class. Returned class must implement the <code>AutoTable\TableInterface</code> interface.</td>
+<td>false</td>
+<td><code>AutoTable\BaseTable</code></td>
 </tr>
 <tr>
 <td>entity</td>
@@ -211,6 +225,13 @@
 <td>The table to link to. This is a key in the <code>auto_tables</code> config, not a DB table name.</td>
 <td>true</td>
 <td>None</td>
+</tr>
+<tr>
+<td>should_save</td>
+<td>bool</td>
+<td>When using <code>alias_to</code> or a <code>one_to_many</code> or <code>many_to_many</code> type, the key is automatically removed from the data before saving to the DB as these properties typically don't represent real columns. To turn off this behavior for single properties, set this to true.</td>
+<td>false</td>
+<td>false</td>
 </tr>
 <tr>
 <td>remote_column</td>
@@ -302,6 +323,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="../codebase-integration/" class="btn btn-neutral float-right" title="Codebase Integration">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
       
         <a href="../saving/" class="btn btn-neutral" title="Save Records"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
@@ -331,6 +354,8 @@
       
         <span><a href="../saving/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
+      
+        <span style="margin-left: 15px"><a href="../codebase-integration/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

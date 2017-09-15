@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Codebase Integration - ZF2 AutoTable</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Codebase Integration";
+    var mkdocs_page_input_path = "codebase-integration.md";
+    var mkdocs_page_url = "/codebase-integration/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ZF2 AutoTable</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../install/">Installation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../retrieving/">Retrieve Records</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../saving/">Save Records</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../config/">Configuration</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Codebase Integration</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#integrating-into-your-code">Integrating into your code</a></li>
+                
+                    <li><a class="toctree-l4" href="#all-tracked-objects-are-proxy-objects">All tracked objects are Proxy objects</a></li>
+                
+                    <li><a class="toctree-l4" href="#tracking-changes-to-untracked-objects">Tracking changes to untracked objects</a></li>
+                
+                    <li><a class="toctree-l4" href="#using-a-custom-table-class">Using a custom table class</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ZF2 AutoTable</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Codebase Integration</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="integrating-into-your-code">Integrating into your code</h1>
+<p>For most cases it should be fairly straighforward to use. However, there are some things to keep in mind when.</p>
+<h2 id="all-tracked-objects-are-proxy-objects">All tracked objects are <code>Proxy</code> objects</h2>
+<p>All of the objects within the system are basically wrapped around your native objects. Changes made to objects that aren't being tracked won't be persisted when <code>flush</code> is called.</p>
+<p>Here are a few examples:</p>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;getTable('articles');
+$entity = $table-&gt;fetchWithId(2);
+
+// Outputs: &quot;AutoTable\Proxy&quot;
+echo get_class($entity);
+</code></pre>
+
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+$untracked_article = new \Application\Model\Article();
+
+// Outputs: &quot;Application\Model\Article&quot;
+echo get_class($untracked_article);
+
+$tracked_article = $manager-&gt;track($untracked_article,'articles');
+
+// Outputs: &quot;AutoTable\Proxy&quot;
+echo get_class($tracked_article);
+</code></pre>
+
+<h2 id="tracking-changes-to-untracked-objects">Tracking changes to untracked objects</h2>
+<p>As previously stated, any changes made to objects untracked won't be persisted when <code>flush</code> is called. However, you can still work with your raw objects as long as you track them before calling <code>flush</code>.</p>
+<blockquote>
+<p><em><strong>Note:</strong> Keep in mind, the features of this module aren't available for raw objects. None of your linked tables will be available unless you are operating on a <code>Proxy</code> object.</em></p>
+</blockquote>
+<h3 id="saving-a-new-record-using-an-untracked-object">Saving a new record using an untracked object</h3>
+<pre><code class="php">$untracked_article = new \Application\Model\Article();
+$untracked_article-&gt;title = 'Yay, an article!';
+
+// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+// Here is where we track it
+$tracked_article = $manager-&gt;track($untracked_article,'articles');
+
+// Force a sync when flush is called
+$manager-&gt;queueSync($tracked_article);
+
+// Changes will be picked up and saved. In this case, a new record.
+$manager-&gt;flush();
+</code></pre>
+
+<h3 id="updating-a-record-using-an-untracked-object">Updating a record using an untracked object</h3>
+<pre><code class="php">// Either created like this or retrieved out of a Proxy object with __getObject()
+$untracked_article = new \Application\Model\Article();
+$untracked_article-&gt;id = 123;
+$untracked_article-&gt;title = 'Yay, an article!';
+
+// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+
+// Here is where we track it
+$tracked_article = $manager-&gt;track($untracked_article,'articles');
+
+// Force a sync when flush is called
+$manager-&gt;queueSync($tracked_article);
+
+// Changes will be picked up and saved. In this case, a new record.
+$manager-&gt;flush();
+</code></pre>
+
+<p>The call to <code>queueSync</code> is unecessary if you make changes after it is tracked:</p>
+<pre><code class="php">$untracked_article = new \Application\Model\Article();
+
+// Track it
+$tracked_article = $manager-&gt;track($untracked_article,'articles');
+
+// Any changes automatically trigger a sync
+$untracked_article-&gt;title = 'Yay, an article!';
+
+$manager-&gt;flush();
+</code></pre>
+
+<h3 id="extracting-the-underlying-object-from-the-proxy-using-proxy__getobject">Extracting the underlying object from the Proxy using <code>Proxy::__getObject</code></h3>
+<p>You are also able to extract the underlying object as seen below.</p>
+<blockquote>
+<p><em><strong>Note:</strong> Doing this removes it from tracking.
+  To persist changes to the extracted untracked object, use one of the methods from above.</em></p>
+</blockquote>
+<pre><code class="php">// $serviceLocator is an instance of the main ServiceManager
+$manager = $serviceLocator-&gt;get(\AutoTable\AutoTableManager::class);
+$table = $manager-&gt;getTable('articles');
+
+$tracked_article = $table-&gt;fetchWithId(2);
+
+// Outputs: &quot;AutoTable\Proxy&quot;
+echo get_class($tracked_article);
+
+$untracked_article = $tracked_article-&gt;__getObject();
+
+// Outputs: &quot;Application\Model\Article&quot;
+echo get_class($untracked_article);
+</code></pre>
+
+<h2 id="using-a-custom-table-class">Using a custom table class</h2>
+<p>By default the <code>AutoTable\BaseTable</code> is used for all of the lookups. If you wish to implement your own for custom data retrievals, simply set it up in the ServiceManager and set the <code>table</code> key in the <a href="../config/">table config</a>.</p>
+<p>It must implement the <code>AutoTable\TableInterface</code> or simply extend <code>AutoTable\BaseTable</code>. You don't have to do anything special with the results so long as the data returned can be hydrated by the specified hydrator. Refer to the BaseTable for examples of code.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../config/" class="btn btn-neutral" title="Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../config/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+
+</body>
+</html>

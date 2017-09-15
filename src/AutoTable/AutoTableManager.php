@@ -35,7 +35,14 @@ class AutoTableManager {
 		$entity = $this->getEntityForTable($name);
 		$result_set = new HydratingResultSet($hydrator,$entity,$proxy,$name);
 		$gateway = $this->createTableGateway($table_config['table_name'],$result_set);
-		$table = new BaseTable($gateway,$table_config['id_column'],$table_config['id_property'],$this->config);
+
+		/* @var $table \AutoTable\TableInterface */
+		$table = $this->serviceLocator->get($table_config['table'] ?? \AutoTable\BaseTable::class);
+
+		$table->setTableGateway($gateway);
+		$table->setPrimaryColumn($table_config['id_column']);
+		$table->setIdProperty($table_config['id_property']);
+		$table->setTablesConfig($this->config);
 
 		$this->tableCache[$name] = $table;
 		return $table;
@@ -62,6 +69,19 @@ class AutoTableManager {
 		$work = UnitOfWork::create($proxy,UnitOfWork::TYPE_CREATE);
 		$this->registerWork($work);
 		return $proxy;
+	}
+
+	public function track($object,string $table) {
+		$proxy = clone $this->proxyPrototype;
+		$proxy->__setObject($object);
+		$proxy->__setTable($table);
+		return $proxy;
+	}
+
+	public function queueSync(Proxy $object) : void {
+		$type = ($object->__getObject()->{$this->config[$object->__getTable()]['primary_property'] ?? 'id'} ?  : UnitOfWork::TYPE_CREATE);
+		$work = UnitOfWork::create($object,$type);
+		$this->registerWork($work);
 	}
 
 	public function delete(Proxy $object) : void {

@@ -8,3 +8,4 @@ pages:
 - Retrieve Records: retrieving.md
 - Save Records: saving.md
 - Configuration: config.md
+- Codebase Integration: codebase-integration.md

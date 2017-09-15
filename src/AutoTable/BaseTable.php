@@ -7,15 +7,8 @@ use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
 
-class BaseTable {
+class BaseTable implements TableInterface {
 	public $tableGateway,$primaryColumn,$idProperty,$tablesConfig;
-
-	public function __construct(TableGateway $table_gateway,string $primary_column,string $id_property,array $tables_config) {
-		$this->tableGateway = $table_gateway;
-		$this->primaryColumn = $primary_column;
-		$this->idProperty = $id_property;
-		$this->tablesConfig = $tables_config;
-	}
 
 	/**
 	 * @param mixed $id
@@ -40,8 +33,6 @@ class BaseTable {
 		$select->join($mapping_table,$remote_table.'.'.$remote_column . ' = ' . $mapping_table.'.'.$remote_mapping_column,[],Select::JOIN_LEFT);
 		$select->join($local_table,$local_table.'.'.$local_column . ' = ' . $mapping_table.'.'.$local_mapping_column,[],Select::JOIN_LEFT);
 		$select->where($filter);
-		//echo $this->tableGateway->getSql()->buildSqlString($select);
-		//exit;
 		return $this->executeJoinSelect($select);
 	}
 
@@ -91,8 +82,12 @@ class BaseTable {
 		$data = $this->tableGateway->getResultSetPrototype()->getHydrator()->extract($object);
 
 		$table_config = $this->tablesConfig[$object->__getTable()];
+
 		if(!empty($table_config['linked_tables'])) {
 			foreach($table_config['linked_tables'] as $property_name => $link_table) {
+				if(!empty($link_table['should_save'])) {
+					continue;
+				}
 				if(isset($link_table['alias_to']) || $link_table['type'] === 'one_to_many' || $link_table['type'] === 'many_to_many') {
 					unset($data[$property_name]);
 				}
@@ -100,6 +95,23 @@ class BaseTable {
 		}
 
 		return $data;
+	}
+
+
+	public function setTableGateway(TableGateway $table_gateway) {
+		$this->tableGateway = $table_gateway;
+	}
+
+	public function setPrimaryColumn(string $primary_column) {
+		$this->primaryColumn = $primary_column;
+	}
+
+	public function setIdProperty(string $id_property) {
+		$this->idProperty = $id_property;
+	}
+
+	public function setTablesConfig(array $tables_config) {
+		$this->tablesConfig = $tables_config;
 	}
 }
 
