@@ -2,11 +2,12 @@
 namespace AutoTable;
 
 class Proxy {
-	private $__object,$__manager,$__tablesConfig,$__table;
+	private $__object,$__manager,$__tablesConfig,$__table,$__unitOfWork;
 
-	public function __construct(AutoTableManager $manager,array $tables_config) {
+	public function __construct(AutoTableManager $manager,UnitOfWork $unitOfWork,array $tables_config) {
 		$this->__manager = $manager;
 		$this->__tablesConfig = $tables_config;
+		$this->__unitOfWork = $unitOfWork;
 	}
 
 	public function __getObject() {
@@ -68,8 +69,7 @@ class Proxy {
 	}
 
 	public function __set($name,$value) {
-		$work = UnitOfWork::create($this,UnitOfWork::TYPE_UPDATE);
-		$this->__manager->registerWork($work);
+		$this->__unitOfWork->registerUpdate($this);
 
 		$table_config = $this->__tablesConfig[$this->__table];
 

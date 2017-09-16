@@ -1,6 +1,6 @@
 # Integrating into your code
 
-For most cases it should be fairly straighforward to use. However, there are some things to keep in mind when.
+For most cases it should be fairly straighforward to use. However, there are some things to keep in mind.
 
 ## All tracked objects are `Proxy` objects
 
@@ -77,7 +77,7 @@ $tracked_article = $manager->track($untracked_article,'articles');
 // Force a sync when flush is called
 $manager->queueSync($tracked_article);
 
-// Changes will be picked up and saved. In this case, a new record.
+// Changes will be picked up and saved.
 $manager->flush();
 ```
 
@@ -123,3 +123,5 @@ echo get_class($untracked_article);
 By default the `AutoTable\BaseTable` is used for all of the lookups. If you wish to implement your own for custom data retrievals, simply set it up in the ServiceManager and set the `table` key in the [table config](/config/).
 
 It must implement the `AutoTable\TableInterface` or simply extend `AutoTable\BaseTable`. You don't have to do anything special with the results so long as the data returned can be hydrated by the specified hydrator. Refer to the BaseTable for examples of code.
+
+The only important note would be to set `shared` to false for your service manager definition of the extended table. Otherwise, the table would get cached incorrectly and things will break.

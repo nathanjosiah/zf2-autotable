@@ -1,12 +1,11 @@
 <?php
-use AutoTable;
-
 return [
 	'auto_tables' => [
 		'articles' => [
 			'table_name' => 'auto_table_articles',
 			'entity' => Application\Model\Article::class,
 			'hydrator' => Application\Model\Hydrator\ObjectPropertyHydrator::class,
+			'table' => Application\Model\Custom::class,
 			'linked_tables' => [
 				'author' => [
 					'type' => 'one_to_one',
@@ -77,6 +76,11 @@ return [
 		'factories' => [
 			AutoTable\BaseTable::class => Zend\ServiceManager\Factory\InvokableFactory::class,
 			AutoTable\AutoTableManager::class => AutoTable\AutoTableManagerServiceFactory::class,
+			Application\Model\Custom::class => Zend\ServiceManager\Factory\InvokableFactory::class,
+		],
+		'shared' => [
+			AutoTable\BaseTable::class => false,
+			Application\Model\Custom::class => false,
 		]
 	]
 ];

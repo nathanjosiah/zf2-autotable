@@ -1,0 +1,5 @@
+<phpunit bootstrap="Bootstrap.php">
+	<testsuite name="Zf2 AutoTable Module">
+		<directory>./AutoTableTest</directory>
+	</testsuite>
+</phpunit>
