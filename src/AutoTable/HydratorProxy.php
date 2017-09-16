@@ -21,7 +21,9 @@ class HydratorProxy implements HydratorInterface {
 		if(!$object instanceof Proxy) {
 			return $this->instance->hydrate($data,$object);
 		}
-		return $this->instance->hydrate($data,$object->__getObject());
+		$this->instance->hydrate($data,$object->__getObject());
+		// Return the proxy, not the real object
+		return $object;
 	}
 }
 
