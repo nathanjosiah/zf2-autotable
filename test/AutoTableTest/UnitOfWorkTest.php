@@ -7,10 +7,12 @@ use AutoTable\AutoTableManager;
 use AutoTable\TableInterface;
 use AutoTable\Proxy;
 use Zend\Db\TableGateway\TableGateway;
+use AutoTable\TableGatewayFactory;
 
 class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 
 	public function testCreationTriggersSave() {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		$object->expects($this->once())->method('__getTable')->will($this->returnValue('mytable'));
 
@@ -25,12 +27,13 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		$manager->expects($this->once())->method('getTable')->with('mytable')->will($this->returnValue($table));
 
 		$config = [];
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		$uow->registerCreate($object);
 		$uow->flush();
 	}
 
 	public function testCreationDoesntDuplicateSaveForSameObjectWhenAddedMultipleTimes() {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		$object->expects($this->once())->method('__getTable')->will($this->returnValue('mytable'));
 
@@ -45,13 +48,14 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		$manager->expects($this->once())->method('getTable')->with('mytable')->will($this->returnValue($table));
 
 		$config = [];
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		$uow->registerCreate($object);
 		$uow->registerCreate($object);
 		$uow->flush();
 	}
 
 	public function testCreationDoesntDuplicateSaveForSameObjectWhenUpdatedBeforeFlushed() {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		$object->expects($this->once())->method('__getTable')->will($this->returnValue('mytable'));
 
@@ -66,13 +70,14 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		$manager->expects($this->once())->method('getTable')->with('mytable')->will($this->returnValue($table));
 
 		$config = [];
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		$uow->registerCreate($object);
 		$uow->registerUpdate($object);
 		$uow->flush();
 	}
 
 	public function testUpdateTriggersSave() {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		$object->expects($this->once())->method('__getTable')->will($this->returnValue('mytable'));
 
@@ -87,7 +92,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		$manager->expects($this->once())->method('getTable')->with('mytable')->will($this->returnValue($table));
 
 		$config = [];
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		$uow->registerUpdate($object);
 		$uow->flush();
 	}
@@ -101,6 +106,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	private function _testDelete($custom_prop=false) {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		// Assert that the id is being retrieved from the correct property
 		$object->expects($this->any())->method('__get')->with($custom_prop ? 'myrealid' : 'id')->will($this->returnValue(123));
@@ -123,7 +129,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		if($custom_prop) {
 			$config['mytable']['primary_property'] = 'myrealid';
 		}
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		$uow->registerDelete($object);
 		$uow->flush();
 	}
@@ -146,6 +152,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	private function _testLink($unlink=false,$custom_prop=false) {
+		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$object = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		// Assert that the id is being retrieved from the correct property
 		$object->expects($this->any())->method('__get')->with($custom_prop ? 'myrealid' : 'id')->will($this->returnValue(123));
@@ -163,7 +170,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 		$manager = $this->getMockBuilder(AutoTableManager::class)->disableOriginalConstructor()->getMock();
 
 		// Assert that the correct table is retrieved
-		$manager->expects($this->once())->method('createTableGateway')->with('super_map')->will($this->returnValue($gateway));
+		$table_gateway_factory->expects($this->once())->method('create')->with('super_map')->will($this->returnValue($gateway));
 
 		$config = [
 			'mytable' => [
@@ -196,7 +203,7 @@ class UnitOfWorkTest extends \PHPUnit_Framework_TestCase {
 			$config['mytable2']['primary_property'] = 'myrealid2';
 		}
 
-		$uow = new UnitOfWork($manager,$config);
+		$uow = new UnitOfWork($manager,$config,$table_gateway_factory);
 		if($unlink) {
 			$uow->registerUnlink($object,$object2);
 		}

@@ -3,18 +3,30 @@
 namespace AutoTable;
 
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\ResultSet\ResultSetInterface;
 
 class AutoTableManager {
-	protected $config,$serviceLocator,$proxyPrototype,$unitOfWork;
+	protected $config,$serviceLocator,$proxyPrototype,$unitOfWork,$hydratorProxyFactory,$resultSetFactory,$proxyFactory,$tableGatewayFactory;
 	protected $tableCache = [];
 	protected $work = [];
 
-	public function __construct(ServiceLocatorInterface $serviceLocator) {
-		$this->serviceLocator = $serviceLocator;
-		$this->config = $serviceLocator->get('Config')['auto_tables'];
-		$this->unitOfWork = new UnitOfWork($this,$this->config);
+	public function __construct(
+		array $config,
+		ServiceLocatorInterface $service_locator,
+		HydratorProxyFactory $hydrator_proxy_factory,
+		ResultSetFactory $result_set_factory,
+		ProxyFactory $proxy_factory,
+		TableGatewayFactory $table_gateway_factory
+	) {
+		$this->serviceLocator = $service_locator;
+		$this->config = $config;
+		$this->hydratorProxyFactory = $hydrator_proxy_factory;
+		$this->resultSetFactory = $result_set_factory;
+		$this->proxyFactory = $proxy_factory;
+		$this->tableGatewayFactory = $table_gateway_factory;
+	}
+
+	public function setUnitOfWork(UnitOfWork $unit_of_work) : void {
+		$this->unitOfWork = $unit_of_work;
 	}
 
 	public function getTable(string $name) {
@@ -25,33 +37,26 @@ class AutoTableManager {
 
 		$table_config = $this->config[$name];
 		$table_config['id_column'] = $table_config['id_column'] ?? 'id';
-		$table_config['id_property'] = $table_config['id_property'] ?? 'id';
+		$table_config['primary_property'] = $table_config['primary_property'] ?? 'id';
 
-		$entity_class = $table_config['entity'];
-
-		$hydrator = new HydratorProxy($this->serviceLocator->get($table_config['hydrator']));
-		$proxy = new Proxy($this,$this->unitOfWork,$this->config);
-		$this->proxyPrototype = $proxy;
-		$entity = $this->getEntityForTable($name);
-		$result_set = new HydratingResultSet($hydrator,$entity,$proxy,$name);
-		$gateway = $this->createTableGateway($table_config['table_name'],$result_set);
+		$this->proxyPrototype = $this->proxyFactory->create($this,$this->unitOfWork,$this->config);
+		$result_set = $this->resultSetFactory->create(
+			$this->hydratorProxyFactory->create($this->serviceLocator->get($table_config['hydrator'])),
+			$this->getEntityForTable($name),
+			$this->proxyPrototype,
+			$name
+		);
+		$gateway = $this->tableGatewayFactory->create($table_config['table_name'],[],$result_set);
 
 		/* @var $table \AutoTable\TableInterface */
 		$table = $this->serviceLocator->get($table_config['table'] ?? \AutoTable\BaseTable::class);
-
 		$table->setTableGateway($gateway);
 		$table->setPrimaryColumn($table_config['id_column']);
-		$table->setIdProperty($table_config['id_property']);
+		$table->setIdProperty($table_config['primary_property']);
 		$table->setTablesConfig($this->config);
 
 		$this->tableCache[$name] = $table;
 		return $table;
-	}
-
-	public function createTableGateway(string $table,ResultSetInterface $result_set=null) : TableGateway {
-		$adapter = $this->serviceLocator->get('Zend\Db\Adapter\Adapter');
-		$gateway = new TableGateway($table,$adapter,[],$result_set);
-		return $gateway;
 	}
 
 	private function getEntityForTable(string $table) {
@@ -63,7 +68,7 @@ class AutoTableManager {
 
 	public function createNew(string $table) : Proxy {
 		$entity = $this->getEntityForTable($table);
-		$proxy = clone $this->proxyPrototype;
+		$proxy = $this->proxyFactory->create($this,$this->unitOfWork,$this->config);
 		$proxy->__setObject($entity);
 		$proxy->__setTable($table);
 		$this->unitOfWork->registerCreate($proxy);
@@ -71,7 +76,7 @@ class AutoTableManager {
 	}
 
 	public function track($object,string $table) : Proxy {
-		$proxy = clone $this->proxyPrototype;
+		$proxy = $this->proxyFactory->create($this,$this->unitOfWork,$this->config);
 		$proxy->__setObject($object);
 		$proxy->__setTable($table);
 		return $proxy;

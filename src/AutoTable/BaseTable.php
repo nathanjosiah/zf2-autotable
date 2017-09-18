@@ -2,10 +2,10 @@
 
 namespace AutoTable;
 
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
 use Zend\Paginator\Adapter\DbSelect;
 use Zend\Paginator\Paginator;
+use Zend\Db\TableGateway\TableGatewayInterface;
 
 class BaseTable implements TableInterface {
 	public $tableGateway,$primaryColumn,$idProperty,$tablesConfig;
@@ -98,7 +98,7 @@ class BaseTable implements TableInterface {
 	}
 
 
-	public function setTableGateway(TableGateway $table_gateway) {
+	public function setTableGateway(TableGatewayInterface $table_gateway) {
 		$this->tableGateway = $table_gateway;
 	}
 

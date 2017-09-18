@@ -13,7 +13,17 @@ class AutoTableManagerServiceFactory implements FactoryInterface {
 	}
 
 	public function __invoke(\Interop\Container\ContainerInterface $serviceLocator,$requested_name,array $options = null) {
-		$manager = new AutoTableManager($serviceLocator);
+		$table_gateway_factory = new TableGatewayFactory($serviceLocator->get('Zend\Db\Adapter\Adapter'));
+		$config = $serviceLocator->get('Config')['auto_tables'];
+		$manager = new AutoTableManager(
+			$config,
+			$serviceLocator,
+			new HydratorProxyFactory(),
+			new ResultSetFactory(),
+			new ProxyFactory(),
+			$table_gateway_factory
+		);
+		$manager->setUnitOfWork(new UnitOfWork($manager,$config,$table_gateway_factory));
 		return $manager;
 	}
 }

@@ -9,12 +9,13 @@ class UnitOfWork {
 	const TYPE_LINK = 'link';
 	const TYPE_UNLINK = 'unlink';
 
-	public $object,$type,$manager,$config;
+	public $object,$type,$manager,$config,$tableGatewayFactory;
 	private $work = [];
 
-	public function __construct(AutoTableManager $manager,array $config) {
+	public function __construct(AutoTableManager $manager,array $config,TableGatewayFactory $table_gateway_factory) {
 		$this->manager = $manager;
 		$this->config = $config;
+		$this->tableGatewayFactory = $table_gateway_factory;
 	}
 
 	private function doWork($object,string $type) {
@@ -42,7 +43,7 @@ class UnitOfWork {
 			}
 
 			// Get the main object table name based on the toObject.linked_table[].remote_table = mainObject.__getTable
-			$gateway = $this->manager->createTableGateway($this->config[$link_config['mapping_table']]['table_name']);
+			$gateway = $this->tableGatewayFactory->create($this->config[$link_config['mapping_table']]['table_name']);
 
 			if($type === self::TYPE_LINK) {
 				$gateway->insert([
