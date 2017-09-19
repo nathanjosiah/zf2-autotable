@@ -29,6 +29,10 @@ class AutoTableManager {
 		$this->unitOfWork = $unit_of_work;
 	}
 
+	public function setConfig(array $config) : void {
+		$this->config = $config;
+	}
+
 	public function getTable(string $name) {
 		// Waste not
 		if(isset($this->tableCache[$name])) {
