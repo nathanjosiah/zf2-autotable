@@ -8,5 +8,3 @@ install:
   - travis_retry composer install --no-interaction
 branches:
   only: master
-script: 
-  - phpunit --configuration phpunit.xml
