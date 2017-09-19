@@ -1,9 +1,12 @@
 language: php
+git:
+  depth: 1
 php:
   - '7.0'
   - '7.1'
-  - hhvm # on Trusty only
 install:
-  - composer install
+  - travis_retry composer install --no-interaction
+branches:
+  only: master
 script: 
-  - phpunit --bootstrap test/Bootstrap.php test/AutoTableTest
+  - phpunit --configuration phpunit.xml

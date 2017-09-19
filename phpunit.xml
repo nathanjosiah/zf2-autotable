@@ -1,0 +1,7 @@
+<phpunit bootstrap="test/Bootstrap.php">
+	<testsuites>
+		<testsuite name="Module Tests">
+			<directory>./test/AutoTableTest</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
