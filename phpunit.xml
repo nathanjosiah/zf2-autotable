@@ -1,7 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="test/Bootstrap.php">
 	<testsuites>
 		<testsuite name="Module Tests">
 			<directory>./test/AutoTableTest</directory>
 		</testsuite>
 	</testsuites>
+	<filter>
+		<whitelist>
+			<directory>./test/AutoTableTest</directory>
+		</whitelist>
+	</filter>
 </phpunit>
