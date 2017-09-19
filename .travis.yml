@@ -5,4 +5,4 @@ php:
   - hhvm # on Trusty only
 install:
    - composer install --no-dev
-script: phpunit -c test/phpunit.xml
+script: phpunit --configuration test/phpunit.xml --testsuite Zf2AutoTableModule
