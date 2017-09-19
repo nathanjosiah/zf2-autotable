@@ -39,11 +39,10 @@ class AutoTableManager {
 		$table_config['id_column'] = $table_config['id_column'] ?? 'id';
 		$table_config['primary_property'] = $table_config['primary_property'] ?? 'id';
 
-		$this->proxyPrototype = $this->proxyFactory->create($this,$this->unitOfWork,$this->config);
 		$result_set = $this->resultSetFactory->create(
 			$this->hydratorProxyFactory->create($this->serviceLocator->get($table_config['hydrator'])),
 			$this->getEntityForTable($name),
-			$this->proxyPrototype,
+			$this->proxyFactory,
 			$name
 		);
 		$gateway = $this->tableGatewayFactory->create($table_config['table_name'],[],$result_set);

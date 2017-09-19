@@ -37,7 +37,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -45,17 +45,14 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 
 		// Stubs for the assertions
 		$hydrator_proxy = $this->getMockBuilder(HydratorProxy::class)->disableOriginalConstructor()->getMock();
-		$proxy = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 		$result_set = $this->getMockBuilder(ResultSetInterface::class)->getMock();
 		$table_gateway = $this->getMockBuilder(TableGatewayInterface::class)->getMock();
 
 
-		// Assert the proxy is created correctly
-		$proxy_factory->expects($this->once())->method('create')->with($manager,$unit_of_work,$config)->willReturn($proxy);
 		// Assert the hydrator is proxied correctly
 		$hydrator_proxy_factory->expects($this->once())->method('create')->with($hydrator)->willReturn($hydrator_proxy);
 		// Assert the result set is created correctly
-		$result_set_factory->expects($this->once())->method('create')->with($hydrator_proxy,$entity,$proxy,'mytable')->willReturn($result_set);
+		$result_set_factory->expects($this->once())->method('create')->with($hydrator_proxy,$entity,$proxy_factory,'mytable')->willReturn($result_set);
 		// Assert the result set is created correctly
 		$table_gateway_factory->expects($this->once())->method('create')->with('real_table',[],$result_set)->willReturn($table_gateway);
 		// Assert the able gets the gateway injected
@@ -86,7 +83,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -123,7 +120,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -156,7 +153,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -164,7 +161,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$proxy = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 
 		// Assert proxy is created correctly
-		$proxy_factory->expects($this->once())->method('create')->with($manager,$unit_of_work,$config)->willReturn($proxy);
+		$proxy_factory->expects($this->once())->method('create')->willReturn($proxy);
 		// Assert entity is assigned
 		$proxy->expects($this->once())->method('__setObject')->with($entity);
 		// Assert table name is assigned
@@ -183,7 +180,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -192,7 +189,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$proxy = $this->getMockBuilder(Proxy::class)->disableOriginalConstructor()->getMock();
 
 		// Assert proxy is created correctly
-		$proxy_factory->expects($this->once())->method('create')->with($manager,$unit_of_work,$config)->willReturn($proxy);
+		$proxy_factory->expects($this->once())->method('create')->willReturn($proxy);
 		// Assert entity is assigned
 		$proxy->expects($this->once())->method('__setObject')->with($entity);
 		// Assert table name is assigned
@@ -213,7 +210,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -240,7 +237,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -263,7 +260,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -285,7 +282,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -312,7 +309,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);
@@ -339,7 +336,7 @@ class AutoTableManagerTest extends \PHPUnit_Framework_TestCase {
 		$unit_of_work = $this->getMockBuilder(UnitOfWork::class)->disableOriginalConstructor()->getMock();
 		$hydrator_proxy_factory = $this->getMockBuilder(HydratorProxyFactory::class)->getMock();
 		$result_set_factory = $this->getMockBuilder(ResultSetFactory::class)->getMock();
-		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->getMock();
+		$proxy_factory = $this->getMockBuilder(ProxyFactory::class)->disableOriginalConstructor()->getMock();
 		$table_gateway_factory = $this->getMockBuilder(TableGatewayFactory::class)->disableOriginalConstructor()->getMock();
 		$manager = new AutoTableManager($config,$service_locator,$hydrator_proxy_factory,$result_set_factory,$proxy_factory,$table_gateway_factory);
 		$manager->setUnitOfWork($unit_of_work);

@@ -3,8 +3,18 @@
 namespace AutoTable;
 
 class ProxyFactory {
-	public function create(AutoTableManager $manager,UnitOfWork $unitOfWork,array $tables_config) : Proxy {
-		return new Proxy($manager,$unitOfWork,$tables_config);
+	protected  $manager,$unitOfWork,$tablesConfig;
+	public function __construct(UnitOfWork $unitOfWork,array $tables_config,AutoTableManager $manager=null) {
+		$this->manager = $manager;
+		$this->unitOfWork = $manager;
+		$this->tablesConfig = $tables_config;
+	}
+	public function create() : Proxy {
+		return new Proxy($this->manager,$this->unitOfWork,$this->tablesConfig);
+	}
+
+	public function setManager(AutoTableManager $manager) : void {
+		$this->manager = $manager;
 	}
 }
 

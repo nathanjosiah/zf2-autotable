@@ -9,10 +9,10 @@ class HydratingResultSet extends ZendResultSet {
 	// Enable the buffer so the results can be rewound. There are too many issues with this turned off.
 	protected $buffer = [];
 
-	public $proxyPrototype,$tableName;
-	public function __construct(HydratorInterface $hydrator,$objectPrototype,Proxy $proxyPrototype,string $table_name) {
+	public $proxyFactory,$tableName;
+	public function __construct(HydratorInterface $hydrator,$objectPrototype,ProxyFactory $proxy_factory,string $table_name) {
 		parent::__construct($hydrator,$objectPrototype);
-		$this->proxyPrototype = $proxyPrototype;
+		$this->proxyFactory = $proxy_factory;
 		$this->tableName = $table_name;
 	}
 
@@ -21,7 +21,7 @@ class HydratingResultSet extends ZendResultSet {
 		if(!$current) {
 			return $current;
 		}
-		$proxy = clone $this->proxyPrototype;
+		$proxy = $this->proxyFactory->create();
 		$proxy->__setObject($current);
 		$proxy->__setTable($this->tableName);
 		return $proxy;
