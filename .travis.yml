@@ -4,6 +4,6 @@ php:
   - '7.1'
   - hhvm # on Trusty only
 install:
-  - composer install --no-dev
+  - composer install
 script: 
   - phpunit --bootstrap test/Bootstrap.php test/AutoTableTest
