@@ -6,4 +6,4 @@ php:
 install:
   - composer install --no-dev
 script: 
-  - phpunit --configuration test/phpunit.xml ./AutoTableTest
+  - phpunit --bootstrap test/Bootstrap.php test/AutoTableTest
