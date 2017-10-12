@@ -52,6 +52,9 @@ class Proxy {
 			$result = $table->fetchWithFilter([$link_config['remote_column'] => $this->__object->{$link_config['local_property']}]);
 		}
 		elseif($type === 'many_to_many') {
+			if(empty($this->__object->{$link_config['local_property']})) {
+				return [];
+			}
 			$table = $this->__manager->getTable($link_config['remote_table']);
 			$mapping_table_name = $this->__tablesConfig[$link_config['mapping_table']]['table_name'];
 			$result = $table->fetchWithFilteredJoin(
